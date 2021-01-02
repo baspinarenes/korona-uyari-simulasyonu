@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
 class Anasayfa extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    setupFirebase();
     return Scaffold(
       body: Center(
         child: Container(
@@ -331,6 +332,38 @@ class FireMapState extends State<FireMap> {
     );
 
     markers[MarkerId(id)] = marker;
+  }
+}
+
+void setupFirebase() async {
+  List<GeoPoint> waypoints = [
+    GeoPoint(40.814710708066436, 29.918302905265076),
+    GeoPoint(40.81712592009916, 29.924846930323028),
+    GeoPoint(40.82024376550104, 29.922486586479568),
+    GeoPoint(40.82490402157399, 29.918924613060373),
+    GeoPoint(40.822062440975444, 29.929825110012445),
+    GeoPoint(40.821526586419054, 29.92362384304561),
+  ];
+
+  for (var i = 0; i < waypoints.length; i++) {
+    await FirebaseFirestore.instance.collection("people").add({
+      'name': 'person_${i + 1}',
+      'location': waypoints[i],
+    });
+  }
+
+  Random r = new Random();
+
+  for (var i = 0; i < 20; i++) {
+    double randomLat = 40.82508129491367 +
+        (40.82508129491367 - 40.81766386809624) * r.nextDouble();
+    double randomLng = 29.926765432939096 +
+        (29.926765432939096 - 29.917068996188128) * r.nextDouble();
+
+    await FirebaseFirestore.instance.collection("people").add({
+      'name': 'bot_${i + 1}',
+      'location': GeoPoint(randomLat, randomLng),
+    });
   }
 }
 
