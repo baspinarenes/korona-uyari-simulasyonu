@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1018164736060",
-    "project_id": "fir-2-fe786",
-    "storage_bucket": "fir-2-fe786.appspot.com"
+    "project_number": "1097355102019",
+    "project_id": "koronapp-ff3b3",
+    "storage_bucket": "koronapp-ff3b3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1018164736060:android:13837e3d0beba8ac4bd339",
+        "mobilesdk_app_id": "1:1097355102019:android:e210060cd8b09539e6d1f6",
         "android_client_info": {
           "package_name": "com.proje.iot_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1018164736060-6p0qnabm8726jqf9g5go4nd68r4prvu9.apps.googleusercontent.com",
+          "client_id": "1097355102019-mga4tenkec4i4davondbo4aafu9teml9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDH2jojZs8WY0UXSzyZG5kxWXPPm6roAWc"
+          "current_key": "AIzaSyACOGnwcvWC2FJIPmU2uaPlZPw0atjtnRQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1018164736060-6p0qnabm8726jqf9g5go4nd68r4prvu9.apps.googleusercontent.com",
+              "client_id": "1097355102019-mga4tenkec4i4davondbo4aafu9teml9.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

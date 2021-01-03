@@ -1,17 +1,25 @@
 import 'dart:math';
-
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:control_pad/control_pad.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:geolocator/geolocator.dart';
+import "dart:collection";
 
 Person me = Person();
+
+Map<String, int> inSocialDistance = {
+  "positive": 0,
+  "negative": 0,
+};
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // setupFirebase();
+
   runApp(MyApp());
 }
 
@@ -20,6 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Google Maps Demo',
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Anasayfa(),
       ),
@@ -30,7 +39,6 @@ class MyApp extends StatelessWidget {
 class Anasayfa extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    setupFirebase();
     return Scaffold(
       body: Center(
         child: Container(
@@ -214,6 +222,8 @@ class FireMap extends StatefulWidget {
   State createState() => FireMapState();
 }
 
+var socialDistance = 500.0;
+
 class FireMapState extends State<FireMap> {
   GoogleMapController mapController;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
@@ -228,7 +238,7 @@ class FireMapState extends State<FireMap> {
               circles.add(Circle(
                 circleId: CircleId("home"),
                 center: LatLng(me.location.latitude, me.location.longitude),
-                radius: 500,
+                radius: socialDistance,
                 fillColor: Color.fromRGBO(89, 182, 91, 0.6),
                 strokeColor: Color.fromRGBO(0, 0, 0, 0),
               ));
@@ -236,47 +246,114 @@ class FireMapState extends State<FireMap> {
               circles[0] = Circle(
                 circleId: CircleId("home"),
                 center: LatLng(me.location.latitude, me.location.longitude),
-                radius: 500,
+                radius: socialDistance,
                 fillColor: Color.fromRGBO(89, 182, 91, 0.6),
                 strokeColor: Color.fromRGBO(0, 0, 0, 0),
               );
             }
           }
           getMarkers(snapshot);
+          calculatePeopleDistance(snapshot);
 
-          return Stack(
-            children: [
-              GoogleMap(
-                markers: Set<Marker>.of(markers.values),
-                initialCameraPosition: CameraPosition(
-                  target: me.location,
-                  zoom: 15,
+          return Material(
+            type: MaterialType.transparency,
+            child: Stack(
+              children: [
+                GoogleMap(
+                  markers: Set<Marker>.of(markers.values),
+                  initialCameraPosition: CameraPosition(
+                    target: me.location,
+                    zoom: 15,
+                  ),
+                  onMapCreated: _onMapCreated,
+                  circles: circles.toSet(),
                 ),
-                onMapCreated: _onMapCreated,
-                circles: circles.toSet(),
-              ),
-              Positioned(
-                bottom: 25,
-                left: 25,
-                child: JoystickView(
-                  size: 150,
-                  showArrows: false,
-                  opacity: 0.8,
-                  interval: Duration(seconds: 1),
-                  innerCircleColor: Colors.white,
-                  backgroundColor: Colors.white38,
-                  onDirectionChanged: (double angle, double distance) {
-                    var radian = angle * pi / 180;
-                    var delta_latitude = distance * cos(radian) / 10000;
-                    var delta_longitude = distance * sin(radian) / 10000;
+                Positioned(
+                  bottom: 25,
+                  left: 25,
+                  child: JoystickView(
+                    size: 150,
+                    showArrows: false,
+                    opacity: 0.8,
+                    interval: Duration(seconds: 1),
+                    innerCircleColor: Colors.white,
+                    backgroundColor: Colors.white38,
+                    onDirectionChanged: (double angle, double distance) {
+                      var radian = angle * pi / 180;
+                      var delta_latitude = distance * cos(radian) / 10000;
+                      var delta_longitude = distance * sin(radian) / 10000;
 
-                    changeMeLocation(delta_latitude, delta_longitude);
-                  },
+                      changeMeLocation(delta_latitude, delta_longitude);
+                    },
+                  ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 50),
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color.fromRGBO(2500, 0, 0, 0.6),
+                      ),
+                      width: MediaQuery.of(context).size.width * 0.85,
+                      height: 80,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10, top: 15, right: 10, bottom: 15),
+                          child: Text(
+                            'Yakınlarınızda bulunan ve korona testi pozitif '
+                            'çıkanların oranı: ${me.percentOfCorona.toStringAsFixed(2)}%.\n'
+                            'Kendinize dikkat edin.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           );
         });
+  }
+
+  Future<void> calculatePeopleDistance(
+      AsyncSnapshot<QuerySnapshot> snapshot) async {
+    inSocialDistance["positive"] = 0;
+    inSocialDistance["negative"] = 0;
+
+    for (var doc in snapshot.data.docs) {
+      if (doc['name'] != me.name) {
+        var distance = Geolocator.distanceBetween(
+            doc['location'].latitude,
+            doc['location'].longitude,
+            me.location.latitude,
+            me.location.longitude);
+
+        if (distance < socialDistance) {
+          if (doc['corona_test'] == 'positive') {
+            inSocialDistance['positive'] += 1;
+          } else {
+            inSocialDistance['negative'] += 1;
+          }
+        }
+      }
+    }
+
+    me.percentOfCorona = inSocialDistance["positive"] /
+        (inSocialDistance["negative"] + inSocialDistance["positive"]) *
+        100;
+    if (me.percentOfCorona.isNaN) {
+      me.percentOfCorona = 0;
+    }
+
+    print('hehehe: ${inSocialDistance}');
   }
 
   Future<void> getMarkers(AsyncSnapshot<QuerySnapshot> snapshot) async {
@@ -287,7 +364,6 @@ class FireMapState extends State<FireMap> {
                 ImageConfiguration(size: Size(96, 96)),
                 'assets/${doc['name']}.png')
             .then((onValue) {
-          print(onValue);
           _icon = onValue;
         });
         LatLng loc =
@@ -349,21 +425,29 @@ void setupFirebase() async {
     await FirebaseFirestore.instance.collection("people").add({
       'name': 'person_${i + 1}',
       'location': waypoints[i],
+      'corona_test': 'negative',
     });
   }
 
   Random r = new Random();
 
-  for (var i = 0; i < 20; i++) {
-    double randomLat = 40.82508129491367 +
-        (40.82508129491367 - 40.81766386809624) * r.nextDouble();
-    double randomLng = 29.926765432939096 +
-        (29.926765432939096 - 29.917068996188128) * r.nextDouble();
+  for (var i = 0; i < 40; i++) {
+    double randomLat = 40.81488 + (40.82559 - 40.81488) * r.nextDouble();
+    double randomLng = 29.91369 + (29.93088 - 29.91369) * r.nextDouble();
 
-    await FirebaseFirestore.instance.collection("people").add({
-      'name': 'bot_${i + 1}',
-      'location': GeoPoint(randomLat, randomLng),
-    });
+    if (i < 20) {
+      await FirebaseFirestore.instance.collection("people").add({
+        'name': 'bot_${i + 1}',
+        'location': GeoPoint(randomLat, randomLng),
+        'corona_test': 'positive',
+      });
+    } else {
+      await FirebaseFirestore.instance.collection("people").add({
+        'name': 'bot_${i + 1}',
+        'location': GeoPoint(randomLat, randomLng),
+        'corona_test': 'negative',
+      });
+    }
   }
 }
 
@@ -371,6 +455,7 @@ class Person {
   String name;
   LatLng location;
   BitmapDescriptor icon;
+  double percentOfCorona;
 
   Person({this.name, this.location});
 }

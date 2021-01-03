@@ -15,6 +15,7 @@ dependencies:
   control_pad: ^1.1.1+1
   firebase_core: ^0.5.3
   cloud_firestore: ^0.14.4
+  geolocator: ^6.1.13
 
 
 dev_dependencies:
