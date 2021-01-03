@@ -222,7 +222,7 @@ class FireMap extends StatefulWidget {
   State createState() => FireMapState();
 }
 
-var socialDistance = 500.0;
+var socialDistance = 350.0;
 
 class FireMapState extends State<FireMap> {
   GoogleMapController mapController;
@@ -297,19 +297,19 @@ class FireMapState extends State<FireMap> {
                         color: Color.fromRGBO(2500, 0, 0, 0.6),
                       ),
                       width: MediaQuery.of(context).size.width * 0.85,
-                      height: 80,
+                      height: 70,
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.only(
                               left: 10, top: 15, right: 10, bottom: 15),
-                          child: Text(
-                            'Yakınlarınızda bulunan ve korona testi pozitif '
-                            'çıkanların oranı: ${me.percentOfCorona.toStringAsFixed(2)}%.\n'
-                            'Kendinize dikkat edin.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
+                          child: FittedBox(
+                            child: Text(
+                              'Yakınlarınızda bulunan ve korona testi\npozitif '
+                              'çıkan insanların oranı: ${me.percentOfCorona.toStringAsFixed(2)}%.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
@@ -353,7 +353,7 @@ class FireMapState extends State<FireMap> {
       me.percentOfCorona = 0;
     }
 
-    print('hehehe: ${inSocialDistance}');
+    print('Etrafımızdaki insanların sayısı: ${inSocialDistance}');
   }
 
   Future<void> getMarkers(AsyncSnapshot<QuerySnapshot> snapshot) async {
