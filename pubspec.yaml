@@ -16,6 +16,7 @@ dependencies:
   firebase_core: ^0.5.3
   cloud_firestore: ^0.14.4
   geolocator: ^6.1.13
+  auto_size_text: ^2.1.0
 
 
 dev_dependencies:

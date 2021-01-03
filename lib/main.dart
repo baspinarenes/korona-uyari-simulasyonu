@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:geolocator/geolocator.dart';
-import "dart:collection";
+import 'package:auto_size_text/auto_size_text.dart';
 
-Person me = Person();
+Person me = Person(percentOfCorona: 0);
 
 Map<String, int> inSocialDistance = {
   "positive": 0,
@@ -55,18 +55,24 @@ class Anasayfa extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              Text(
-                'KoronApp',
-                style: TextStyle(
-                  fontSize: 30,
-                  color: Colors.black,
+              Card(
+                color: Colors.redAccent,
+                child: SizedBox(
+                  width: 240,
+                  height: 50,
+                  child: Center(
+                    child: Text(
+                      'KoronApp',
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              SizedBox(
-                height: 10,
-              ),
               GridView.count(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
                 shrinkWrap: true,
                 crossAxisCount: 3,
                 children: [
@@ -294,31 +300,45 @@ class FireMapState extends State<FireMap> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color.fromRGBO(2500, 0, 0, 0.6),
+                        color: Color.fromRGBO(2500, 0, 0, 0.8),
                       ),
                       width: MediaQuery.of(context).size.width * 0.85,
-                      height: 70,
+                      height: 60,
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              left: 5, top: 10, right: 5, bottom: 10),
-                          child: FittedBox(
-                            child: Column(
+                              left: 15, top: 10, right: 15, bottom: 10),
+                          child: Container(
+                            child: Row(
                               children: [
-                                Text(
-                                  'Yakınlarınızda bulunan ve korona\ntesti pozitif '
-                                  'çıkan insanların oranı:',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
+                                Expanded(
+                                  flex: 3,
+                                  child: FittedBox(
+                                    fit: BoxFit.cover,
+                                    child: Text(
+                                      'Yakınınızda bulunan, korona testi\npozitif '
+                                      'çıkmış insanların oranı:',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  '${me.percentOfCorona.toStringAsFixed(2)}%.',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: FittedBox(
+                                    fit: BoxFit.fitWidth,
+                                    child: Text(
+                                      '${me.percentOfCorona.toStringAsFixed(2)}%',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -358,10 +378,11 @@ class FireMapState extends State<FireMap> {
       }
     }
 
-    me.percentOfCorona = inSocialDistance["positive"] /
-        (inSocialDistance["negative"] + inSocialDistance["positive"]) *
-        100;
-    if (me.percentOfCorona.isNaN) {
+    if (inSocialDistance["negative"] + inSocialDistance["positive"] != 0) {
+      me.percentOfCorona = inSocialDistance["positive"] /
+          (inSocialDistance["negative"] + inSocialDistance["positive"]) *
+          100;
+    } else {
       me.percentOfCorona = 0;
     }
 
@@ -469,5 +490,5 @@ class Person {
   BitmapDescriptor icon;
   double percentOfCorona;
 
-  Person({this.name, this.location});
+  Person({this.name, this.location, this.percentOfCorona});
 }
