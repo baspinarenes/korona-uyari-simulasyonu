@@ -301,15 +301,27 @@ class FireMapState extends State<FireMap> {
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.only(
-                              left: 10, top: 15, right: 10, bottom: 15),
+                              left: 5, top: 10, right: 5, bottom: 10),
                           child: FittedBox(
-                            child: Text(
-                              'Yakınlarınızda bulunan ve korona testi\npozitif '
-                              'çıkan insanların oranı: ${me.percentOfCorona.toStringAsFixed(2)}%.',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Yakınlarınızda bulunan ve korona\ntesti pozitif '
+                                  'çıkan insanların oranı:',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  '${me.percentOfCorona.toStringAsFixed(2)}%.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
