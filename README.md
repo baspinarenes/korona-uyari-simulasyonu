@@ -1,12 +1,16 @@
 #  Sosyal Mesafe Çemberindeki Korona Pozitif İnsanların Yoğunluğu
 
-![alt text](https://github.com/baspinarenes/korona-uyari-simulasyonu/blob/main/proje-fotograflari/label.png?raw=true)
+![](https://github.com/baspinarenes/korona-uyari-simulasyonu/blob/main/proje-fotograflari/label.png?raw=true)
 
 Bu proje, korona virüs testi pozitif çıkmış insanlara karşı kendi sosyal mesafemizi koruyabilmemiz için bir uyarı sistemi oluşturan simülasyon uygulamasıdır. Proje kapsamında sahte GPS ve test sonucu verileri kullanılmıştır.
 
 ## Uygulama Resimleri
 
-![alt text](https://github.com/baspinarenes/korona-uyari-simulasyonu/blob/main/proje-fotograflari/screen.png)
+![](https://github.com/baspinarenes/korona-uyari-simulasyonu/blob/main/proje-fotograflari/screen.png)
+
+## Firestore Resmi
+
+![](https://github.com/baspinarenes/korona-uyari-simulasyonu/blob/main/proje-fotograflari/firestore.png)
 
 ## Projenin Çalıştırılması
 
