@@ -1,16 +1,25 @@
-# iot_app
+#  Sosyal Mesafe Çemberindeki Korona Pozitif İnsanların Yoğunluğu
 
-A new Flutter application.
+![alt text](https://github.com/baspinarenes/korona-uyari-simulasyonu/blob/main/proje-fotograflari/label.png?raw=true)
 
-## Getting Started
+Bu proje, korona virüs testi pozitif çıkmış insanlara karşı kendi sosyal mesafemizi koruyabilmemiz için bir uyarı sistemi oluşturan simülasyon uygulamasıdır. Proje kapsamında sahte GPS ve test sonucu verileri kullanılmıştır.
 
-This project is a starting point for a Flutter application.
+## Uygulama Resimleri
 
-A few resources to get you started if this is your first Flutter project:
+![alt text](https://github.com/baspinarenes/korona-uyari-simulasyonu/blob/main/proje-fotograflari/screen.png)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Projenin Çalıştırılması
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Projeyi çalıştırmak isterseniz, Firestore projesi oluşturduktan sonra elde edeceğiniz "google-services.json" dosyasını "android/app/" dizinindekiyle değiştirin.
+
+Android Studio veya VSCode ile projeyi açtıktan sonra gerekli paketleri indirin:
+
+```bash
+flutter pub get
+```
+
+Ardından çalıştırın:
+
+```bash
+flutter run
+```
