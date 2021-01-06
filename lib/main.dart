@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 
 Person me = Person(percentOfCorona: 0);
 
@@ -18,7 +17,7 @@ Map<String, int> inSocialDistance = {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // setupFirebase();
+  //setupFirebase();
 
   runApp(MyApp());
 }
@@ -62,7 +61,7 @@ class Anasayfa extends StatelessWidget {
                   height: 50,
                   child: Center(
                     child: Text(
-                      'KoronApp',
+                      'Bana Yaklaşma',
                       style: TextStyle(
                         fontSize: 30,
                         color: Colors.white,
